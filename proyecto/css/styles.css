@@ -1,1 +1,16 @@
+.titulo-seccion {
+  margin-top: 20px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border-radius: 10px;
+}
 
+.color-proximo {
+  background-color: #FFE6CC; 
+  color: #DA8E3D;
+}
+
+.color-eventos {
+  background-color: #FFE4FD; 
+  color: #CE4FC5;
+}
