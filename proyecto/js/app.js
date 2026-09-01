@@ -1,17 +1,9 @@
 // Funcionalidad de la lista de eventos
 const eventos = document.getElementById('listaEventos');
 
-function agregarEvento(textarea) {
-  textarea.addEventListener('change', (e) => {
-    const texto = e.target.value.trim();
-
-    const allEventos = eventos.querySelectorAll('.nuevoEvento');
-    const esUltimoEvento = allEventos[allEventos.length - 1] === e.target;
-
-    if (texto != '' && esUltimoEvento) {
-      crearNuevoEvento();
-    }
-  });
+function ajustarAltura(textarea) {
+  textarea.style.height = 'auto';
+  textarea.style.height = textarea.scrollHeight + 'px';
 }
 
 function crearNuevoEvento() {
@@ -21,16 +13,17 @@ function crearNuevoEvento() {
 
   nuevoEvento.rows = '1';
   nuevoEvento.className = 'nuevoEvento';
-  nuevoEvento.oninput = "this.style.height = 'auto'; this.style.height = this.scrollHeight + 'px'";
   nuevoEvento.placeholder = 'Ingrese un evento...';
-  agregarEvento(nuevoEvento);
+
+  nuevoEvento.addEventListener('input', (e) => {
+    ajustarAltura(e.target);
+  });
 
   botonEliminar.textContent = 'X';
   botonEliminar.className = 'btn btn-outline-secondary btn-sm btnEliminar';
 
   botonEliminar.addEventListener('click', () => {
     const cantEventos = eventos.querySelectorAll('li').length;
-
     if (cantEventos > 1) {
       nuevoLi.remove();
     } else {
@@ -58,10 +51,14 @@ if (primerEvento) {
       primerEvento.remove();
     } else {
       primerInput.value = '';
+      primerInput.style.height = 'auto';
     }
   });
-
-  agregarEvento(primerEvento);
 }
+
+const botonAgregar = document.querySelector('.agregarEvento');
+botonAgregar.addEventListener('click', (e) => {
+  crearNuevoEvento();
+})
 
 console.log('JavaScript funcionandooo');
