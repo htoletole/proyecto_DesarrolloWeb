@@ -33,3 +33,22 @@
   margin-top: 10px;
   
 }
+
+.seleccionProximo {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  border-radius: 15px;
+}
+
+.indicadorDias {
+  margin-top: 12px; 
+  margin-left: 10px;
+}
+
+.inputDias {
+  field-sizing: content;
+  border-style: solid;
+  border-width: 1px;
+  border-color: rgb(199, 199, 199);
+  border-radius: 10px;
+}

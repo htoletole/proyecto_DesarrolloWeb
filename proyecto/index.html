@@ -19,9 +19,27 @@
   <!--Sección 2: Próximo y Eventos-->
   <div class="container-fluid">
     <div class="row">
+      <!--Sección Próximo-->
       <div class="col-sm-8">
         <div class="titulo-seccion color-proximo"><h2>Próximo</h2></div>
+        <div style="display: flex;">
+          <div class="dropdown">
+            <button class="btn btn-outline-secondary btn-sm dropdown-toggle seleccionProximo" type="button" data-bs-toggle="dropdown" aria-expanded="false">Evaluaciones</button>
+            <ul class="dropdown-menu">
+              <li><button class="dropdown-item btnEvaluaciones">Evaluaciones</button></li>
+              <li><button class="dropdown-item btnTareas">Tareas</button></li>
+            </ul>
+          </div>
+          <p class="indicadorDias">Mostrando los próximos <input id="proximosDias" class="inputDias" type="number" min="0" max="30"> días</p>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-hover text-nowrap">
+            <thead id="headProximo"></thead>
+            <tbody id="bodyProximo"></tbody>
+          </table>
+        </div>
       </div>
+      <!--Sección Eventos-->
       <div class="col-sm-4">
         <div class="titulo-seccion color-eventos"><h2>Eventos</h2></div>
         <ul id="listaEventos" class="list-group" style="margin-top: 10px;">
@@ -30,7 +48,7 @@
             <button class="btn btn-outline-secondary btn-sm btnEliminar">X</button>
           </li>
         </ul>
-        <div style="display: flex; justify-content: center;"><button class="btn btn-outline-primary btn-sm agregarEvento">+</button></div>
+        <div style="display: flex; justify-content: center;"><button class="btn btn-outline-primary btn-sm agregarEvento">+ Agregar evento</button></div>
       </div>
     </div>
   </div>
