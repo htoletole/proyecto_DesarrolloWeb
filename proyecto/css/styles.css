@@ -2,6 +2,7 @@
   margin-top: 20px;
   padding-top: 10px;
   padding-bottom: 10px;
+  padding-left: 20px;
   border-radius: 10px;
 }
 
@@ -13,4 +14,22 @@
 .color-eventos {
   background-color: #FFE4FD; 
   color: #CE4FC5;
+}
+
+.nuevoEvento {
+  border-width: 0;
+  outline: none;
+  flex: 1;
+  resize: none;
+  margin-right: 10px;
+}
+
+.itemEvento {
+  display: flex;
+  align-items: flex-start;
+}
+
+.agregarEvento {
+  margin-top: 10px;
+  
 }
