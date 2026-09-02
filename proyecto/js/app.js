@@ -250,7 +250,7 @@ function crearNuevoEvento() {
       nuevoLi.remove();
     } else {
       nuevoEvento.value = '';
-      nuevoEvento.rows = '1';
+      nuevoEvento.style.height = 'auto';
     }
   });
 
