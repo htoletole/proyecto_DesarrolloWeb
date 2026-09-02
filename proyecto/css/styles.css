@@ -52,3 +52,14 @@
   border-color: rgb(199, 199, 199);
   border-radius: 10px;
 }
+.color-fechas{
+  
+  background-color: #a5a2a5; 
+  color: rgb(43, 0, 87);
+}
+
+.color-evaluaciones{
+  
+  background-color: #928e92; 
+  color: rgb(43, 0, 87);
+}
