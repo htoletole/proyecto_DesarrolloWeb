@@ -1,4 +1,23 @@
-/* --- ESTILOS DE EVENTOS Y SECCIONES --- */
+/* ========================================
+   VARIABLES GENERALES
+======================================== */
+
+:root {
+  --ink: #1f2a3c;
+  --paper: #eef1f6;
+  --panel: #ffffff;
+  --line: #d7dce6;
+  --accent: #2f6f6b;
+  --accent-soft: #e3efee;
+  --warn: #c1622d;
+  --warn-soft: #fbe9df;
+}
+
+
+/* ========================================
+   SECCIÓN 2 - PRÓXIMO Y EVENTOS
+======================================== */
+
 .titulo-seccion {
   margin-top: 20px;
   padding-top: 10px;
@@ -8,12 +27,12 @@
 }
 
 .color-proximo {
-  background-color: #FFE6CC; 
+  background-color: #FFE6CC;
   color: #DA8E3D;
 }
 
 .color-eventos {
-  background-color: #FFE4FD; 
+  background-color: #FFE4FD;
   color: #CE4FC5;
 }
 
@@ -41,7 +60,7 @@
 }
 
 .indicadorDias {
-  margin-top: 12px; 
+  margin-top: 12px;
   margin-left: 10px;
 }
 
@@ -53,18 +72,26 @@
   border-radius: 10px;
 }
 
-/* --- ESTILOS NUEVOS: FECHAS Y EVALUACIONES --- */
+
+/* ========================================
+   SECCIÓN 4 - EVALUACIONES Y FECHAS
+======================================== */
+
 .color-fechas {
-  background-color: #a5a2a5; 
+  background-color: #a5a2a5;
   color: rgb(43, 0, 87);
 }
 
 .color-evaluaciones {
-  background-color: #928e92; 
+  background-color: #928e92;
   color: rgb(43, 0, 87);
 }
 
-/* --- ESTILOS NUEVOS: RAMOS --- */
+
+/* ========================================
+   SECCIÓN 3 - RAMOS
+======================================== */
+
 .titulo-ramos {
   background-color: #e4f2ff;
   padding: 14px;
@@ -136,4 +163,170 @@
 .tarjeta-ramo .btn {
   font-size: 11px;
   margin-bottom: 5px;
+}
+
+
+/* ========================================
+   TABLERO DE ACTIVIDADES
+======================================== */
+
+.brand,
+.stat-pill .num,
+.board-col-header {
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.hero {
+  background: linear-gradient(
+    120deg,
+    #1f2a3c 0%,
+    #2f4257 55%,
+    #2f6f6b 100%
+  );
+  color: #f4f6f9;
+  border-radius: 0 0 1.25rem 1.25rem;
+}
+
+.hero .week-tag {
+  display: inline-block;
+  padding: .3rem .75rem;
+  border: 1px solid rgba(244, 246, 249, .35);
+  border-radius: 2rem;
+  font-size: .8rem;
+  letter-spacing: .02em;
+}
+
+.stat-pill {
+  background: rgba(244, 246, 249, .08);
+  border: 1px solid rgba(244, 246, 249, .2);
+  border-radius: .8rem;
+  padding: .65rem 1rem;
+}
+
+.stat-pill .num {
+  font-size: 1.6rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.toolbar {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+}
+
+.board-col {
+  background: transparent;
+}
+
+.board-col-header {
+  font-weight: 600;
+  font-size: .95rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: .5rem .25rem;
+}
+
+.board-col-header .dot {
+  width: .55rem;
+  height: .55rem;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: .5rem;
+}
+
+.dot-pendiente {
+  background: #c1622d;
+}
+
+.dot-progreso {
+  background: #c99a2e;
+}
+
+.dot-completada {
+  background: #2f6f6b;
+}
+
+.col-drop {
+  min-height: 120px;
+  padding-bottom: .5rem;
+  border-radius: .9rem;
+  transition: background .15s ease, box-shadow .15s ease;
+}
+
+.col-drop.drag-over {
+  background: rgba(47, 111, 107, .08);
+  box-shadow: inset 0 0 0 2px var(--accent);
+}
+
+.card-activity {
+  border: 1px solid var(--line);
+  border-radius: .9rem;
+  background: var(--panel);
+  transition:
+    box-shadow .15s ease,
+    opacity .15s ease,
+    transform .15s ease;
+  cursor: grab;
+}
+
+.card-activity:hover {
+  box-shadow: 0 6px 18px rgba(31, 42, 60, .08);
+}
+
+.card-activity.due-soon {
+  border-color: #e3b089;
+  background: var(--warn-soft);
+}
+
+.card-activity.dragging {
+  opacity: .5;
+  cursor: grabbing;
+}
+
+.subject-badge {
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 500;
+  border-radius: .5rem;
+}
+
+.due-badge {
+  font-size: .72rem;
+}
+
+.empty-note {
+  border: 1px dashed var(--line);
+  border-radius: .8rem;
+  color: #6b7686;
+  font-size: .85rem;
+}
+
+
+/* Progreso limitado al tablero para no afectar Ramos */
+
+.board-col .progress {
+  height: .55rem;
+  border-radius: 1rem;
+  background: var(--accent-soft);
+}
+
+.board-col .progress-bar {
+  background: var(--accent);
+}
+
+
+/* Botón propio del tablero */
+
+.btn-accent {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #ffffff;
+}
+
+.btn-accent:hover {
+  background: #255a56;
+  border-color: #255a56;
+  color: #ffffff;
 }
