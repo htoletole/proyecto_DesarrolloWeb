@@ -1,3 +1,4 @@
+/* --- ESTILOS DE EVENTOS Y SECCIONES --- */
 .titulo-seccion {
   margin-top: 20px;
   padding-top: 10px;
@@ -31,7 +32,6 @@
 
 .agregarEvento {
   margin-top: 10px;
-  
 }
 
 .seleccionProximo {
@@ -52,18 +52,19 @@
   border-color: rgb(199, 199, 199);
   border-radius: 10px;
 }
-.color-fechas{
-  
+
+/* --- ESTILOS NUEVOS: FECHAS Y EVALUACIONES --- */
+.color-fechas {
   background-color: #a5a2a5; 
   color: rgb(43, 0, 87);
 }
 
-.color-evaluaciones{
-  
+.color-evaluaciones {
   background-color: #928e92; 
   color: rgb(43, 0, 87);
 }
 
+/* --- ESTILOS NUEVOS: RAMOS --- */
 .titulo-ramos {
   background-color: #e4f2ff;
   padding: 14px;
