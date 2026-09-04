@@ -284,3 +284,93 @@ botonAgregar.addEventListener('click', (e) => {
 })
 
 console.log('JavaScript funcionandooo');
+
+
+//Seccion 4, datos simulados, seleccion de elementos 
+const datosEvaluaciones = 
+[
+  { 
+    evaluacion: "Control 1", 
+    fecha: "Fecha1", 
+    ramo: "Mineria de datos", 
+    modalidad: "Online", 
+    color: "text-success", 
+    nota: "6.7" 
+  },
+  { 
+    evaluacion: " Proyecto 1A", 
+    fecha: "Fecha", 
+    ramo: "Fundamentos de inteligencia artificial", 
+    modalidad: "Asincronica", 
+    color: "text-secondary", 
+    nota: "6.9" 
+  },
+  { 
+    evaluacion: "Control 3 ", 
+    fecha: "Fecha", 
+    ramo: " Infraestructura TI", 
+    modalidad: "Presencial", 
+    color: "text-danger", 
+    nota: "4.2" 
+  },
+  { 
+    evaluacion: "Trabajo 1", 
+    fecha: "Fecha", 
+    ramo: "Desarrollo web y movil ",
+    modalidad: "Online",  
+    color: "text-success", 
+    nota: "7.0" 
+  }
+];
+
+
+const cuerpoTabla = document.getElementById("cuerpoTabla");
+const btnTodo = document.getElementById("btnTodo");
+const btnIA = document.getElementById("btnIA");
+const btnWeb = document.getElementById("btnWeb");
+const btnInfra = document.getElementById("btnInfra");
+const btnMineria = document.getElementById("btnMineria");
+
+function hacer_tabla(array_datos) {
+  cuerpoTabla.innerHTML = "";
+  array_datos.forEach((item) => {
+  const fila = document.createElement("tr");
+  fila.innerHTML = 
+  `
+  <td>${item.evaluacion}</td>
+  <td>${item.fecha}</td>
+  <td><span></span> ${item.ramo}</td>
+  <td><span class="${item.color} fw-bold">${item.modalidad}</span></td>
+  <td>${item.nota}</td>
+  `;
+    cuerpoTabla.appendChild(fila);
+  });
+}
+
+// eventos
+
+btnTodo.addEventListener("click", () => {
+  hacer_tabla(datosEvaluaciones);
+});
+
+btnIA.addEventListener("click", () => {
+  const filtrados = datosEvaluaciones.filter((item) => item.ramo === "Fundamentos de inteligencia artificial");
+  hacer_tabla(filtrados);
+});
+
+btnWeb.addEventListener("click", () => {
+  const filtrados = datosEvaluaciones.filter((item) => item.ramo === "Desarrollo web y movil ");
+  hacer_tabla(filtrados);
+});
+
+btnInfra.addEventListener("click", () => {
+  const filtrados = datosEvaluaciones.filter((item) => item.ramo === " Infraestructura TI");
+  hacer_tabla(filtrados);
+});
+
+btnMineria.addEventListener("click", () => {
+  const filtrados = datosEvaluaciones.filter((item) => item.ramo === "Mineria de datos");
+  hacer_tabla(filtrados);
+});
+
+hacer_tabla(datosEvaluaciones);
