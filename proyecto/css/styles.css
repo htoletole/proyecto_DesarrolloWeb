@@ -330,3 +330,16 @@
   border-color: #255a56;
   color: #ffffff;
 }
+
+.fix_scroll_tabla 
+{
+  min-height: 250px; 
+  overflow-y: auto;
+}
+
+.fix_scroll_tabla thead th 
+{
+  position: sticky;
+  top: 0;
+  background-color: white; 
+}
