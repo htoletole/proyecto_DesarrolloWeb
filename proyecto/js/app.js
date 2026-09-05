@@ -285,6 +285,174 @@ botonAgregar.addEventListener('click', (e) => {
 
 console.log('JavaScript funcionandooo');
 
+// Sección 3: Ramos
+// Datos temporales.
+// Se reemplazarán por los datos de actividades de la Sección 1.
+const datosRamosSeccion3 = [
+  {
+    nombre: "Minería de datos",
+    progreso: 70,
+    nota: "Aún no hay notas",
+    actividad: "Control 1",
+    fecha: "10/09/2026",
+    pendientes: 3,
+    colorBarra: "bg-success",
+    colorPendientes: "text-bg-warning"
+  },
+  {
+    nombre: "Fundamentos de inteligencia artificial",
+    progreso: 50,
+    nota: "6,0",
+    actividad: "Trabajo grupal",
+    fecha: "12/09/2026",
+    pendientes: 2,
+    colorBarra: "bg-danger",
+    colorPendientes: "text-bg-danger"
+  },
+  {
+    nombre: "Infraestructura TI",
+    progreso: 80,
+    nota: "Aún no hay notas",
+    actividad: "Presentación",
+    fecha: "15/09/2026",
+    pendientes: 1,
+    colorBarra: "bg-primary",
+    colorPendientes: "text-bg-success"
+  },
+  {
+    nombre: "Desarrollo web y móvil",
+    progreso: 90,
+    nota: "Aún no hay notas",
+    actividad: "Informe",
+    fecha: "18/09/2026",
+    pendientes: 0,
+    colorBarra: "bg-info",
+    colorPendientes: "text-bg-secondary"
+  }
+];
+
+function obtenerTextoPendientesRamos(cantidad) {
+  if (cantidad === 0) {
+    return "Sin pendientes";
+  }
+
+  if (cantidad === 1) {
+    return "1 pendiente";
+  }
+
+  return cantidad + " pendientes";
+}
+
+
+function mostrarActividadesRamo(ramo) {
+  alert(
+    ramo.nombre +
+    "\nPróxima actividad: " + ramo.actividad +
+    "\nFecha: " + ramo.fecha +
+    "\nPendientes: " + obtenerTextoPendientesRamos(ramo.pendientes)
+  );
+}
+
+
+function cargarRamosSeccion3() {
+  const seccionRamos = document.querySelector(".seccion-ramos");
+
+  if (!seccionRamos) {
+    return;
+  }
+
+  const tarjetas = seccionRamos.querySelectorAll(".tarjeta-ramo");
+
+  tarjetas.forEach((tarjeta, indice) => {
+    const ramo = datosRamosSeccion3[indice];
+
+    if (!ramo) {
+      return;
+    }
+
+    // Nombre del ramo
+    const titulo = tarjeta.querySelector(".card-title");
+
+    if (titulo) {
+      titulo.textContent = ramo.nombre;
+    }
+
+
+    // Barra de progreso
+    const barra = tarjeta.querySelector(".progress-bar");
+
+    if (barra) {
+      barra.style.width = ramo.progreso + "%";
+
+      barra.classList.remove(
+        "bg-success",
+        "bg-danger",
+        "bg-primary",
+        "bg-info"
+      );
+
+      barra.classList.add(ramo.colorBarra);
+    }
+
+
+    // Porcentaje de progreso
+    const porcentaje = tarjeta.querySelector(".texto-progreso + p");
+
+    if (porcentaje) {
+      porcentaje.textContent = ramo.progreso + " %";
+    }
+
+
+    // Nota de presentación
+    const nota = tarjeta.querySelector(".texto-nota + p");
+
+    if (nota) {
+      nota.textContent = ramo.nota;
+    }
+
+
+    // Próxima actividad y fecha
+    const datos = tarjeta.querySelectorAll(".nombre-dato");
+
+    if (datos.length >= 2) {
+      datos[0].nextElementSibling.textContent = ramo.actividad;
+      datos[1].nextElementSibling.textContent = ramo.fecha;
+    }
+
+
+    // Cantidad de pendientes
+    const badge = tarjeta.querySelector(".badge");
+
+    if (badge) {
+      badge.textContent = obtenerTextoPendientesRamos(ramo.pendientes);
+
+      badge.classList.remove(
+        "text-bg-warning",
+        "text-bg-danger",
+        "text-bg-success",
+        "text-bg-secondary"
+      );
+
+      badge.classList.add(ramo.colorPendientes);
+    }
+
+
+    // Botón Ver actividades
+    const boton = tarjeta.querySelector("button.btn");
+
+    if (boton) {
+      boton.onclick = () => {
+        mostrarActividadesRamo(ramo);
+      };
+    }
+  });
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", cargarRamosSeccion3);
+} else {
+  cargarRamosSeccion3();
+}
 
 //Seccion 4, datos simulados, seleccion de elementos 
 const datosEvaluaciones = 
