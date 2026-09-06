@@ -7,9 +7,9 @@ const asignaturas = [
 
 let contadorId = 1;
 let actividades = [
-  { id: contadorId++, nombre: "Preprocesamiento de datos", descripcion: "Dejar lista la limpieza de datos para el próximo control.", asignatura: asignaturas[0], fecha: "2026-09-08", estado: "progreso" },
-  { id: contadorId++, nombre: "Laberinto con búsqueda", descripcion: "Implementar algoritmos de búsqueda para el proyecto.", asignatura: asignaturas, fecha: "2026-08-30", estado: "completada" },
-  { id: contadorId++, nombre: "Configuración de servidor", descripcion: "Dejar listo el laboratorio de infraestructura.", asignatura: asignaturas[2], fecha: "2026-09-06", estado: "pendiente" }
+  { id: contadorId++, nombre: "Preprocesamiento de datos", descripcion: "Dejar lista la limpieza de datos para el próximo control.", asignatura: asignaturas[1], fecha: "2026-09-08", estado: "progreso" },
+  { id: contadorId++, nombre: "Laberinto con búsqueda", descripcion: "Implementar algoritmos de búsqueda para el proyecto.", asignatura: asignaturas[2], fecha: "2026-08-30", estado: "completada" },
+  { id: contadorId++, nombre: "Configuración de servidor", descripcion: "Dejar listo el laboratorio de infraestructura.", asignatura: asignaturas[3], fecha: "2026-09-06", estado: "pendiente" }
 ];
 
 (function () {
@@ -684,20 +684,20 @@ function cargarRamosSeccion3() {
       nota.textContent = ramo.nota;
     }
 
-    const datos = tarjeta.querySelectorAll(".nombre-dato");
-    if (datos.length >= 2) {
-      if (proximaActividad) {
-        datos[0].nextElementSibling.textContent = proximaActividad.nombre;
-        datos.nextElementSibling.textContent =
-          formatearFechaRamos(proximaActividad.fecha);
-      } else if (actividadesRamo.length === 0) {
-        datos[0].nextElementSibling.textContent = "Sin actividades registradas";
-        datos.nextElementSibling.textContent = "-";
-      } else {
-        datos[0].nextElementSibling.textContent = "Sin actividades pendientes";
-        datos.nextElementSibling.textContent = "-";
-      }
-    }
+const datos = tarjeta.querySelectorAll(".nombre-dato");
+if (datos.length >= 2) {
+  if (proximaActividad) {
+    datos[0].nextElementSibling.textContent = proximaActividad.nombre;
+    datos[1].nextElementSibling.textContent =
+      formatearFechaRamos(proximaActividad.fecha);
+  } else if (actividadesRamo.length === 0) {
+    datos[0].nextElementSibling.textContent = "Sin actividades registradas";
+    datos[1].nextElementSibling.textContent = "-";
+  } else {
+    datos[0].nextElementSibling.textContent = "Sin actividades pendientes";
+    datos[1].nextElementSibling.textContent = "-";
+  }
+}
 
     const badge = tarjeta.querySelector(".badge");
     if (badge) {
@@ -725,40 +725,7 @@ function cargarRamosSeccion3() {
 cargarRamosSeccion3();
 
 
-const datosEvaluaciones = [
-  { 
-    evaluacion: "Control 1", 
-    fecha: "Fecha1", 
-    ramo: "Mineria de datos", 
-    modalidad: "Online", 
-    color: "text-success", 
-    nota: "6.7" 
-  },
-  { 
-    evaluacion: " Proyecto 1A", 
-    fecha: "Fecha", 
-    ramo: "Fundamentos de inteligencia artificial", 
-    modalidad: "Asincronica", 
-    color: "text-secondary", 
-    nota: "6.9" 
-  },
-  { 
-    evaluacion: "Control 3 ", 
-    fecha: "Fecha", 
-    ramo: " Infraestructura TI", 
-    modalidad: "Presencial", 
-    color: "text-danger", 
-    nota: "4.2" 
-  },
-  { 
-    evaluacion: "Trabajo 1", 
-    fecha: "Fecha", 
-    ramo: "Desarrollo web y movil ", 
-    modalidad: "Online",  
-    color: "text-success", 
-    nota: "7.0" 
-  }
-];
+const datosEvaluaciones = []
 
 const cuerpoTabla = document.getElementById("cuerpoTabla");
 const btnTodo = document.getElementById("btnTodo");
@@ -782,28 +749,138 @@ function hacer_tabla(array_datos) {
   });
 }
 
+function normalizarRamo(texto) {
+  return texto
+    .trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+}
+
 btnTodo.addEventListener("click", () => {
   hacer_tabla(datosEvaluaciones);
 });
 
 btnIA.addEventListener("click", () => {
-  const filtrados = datosEvaluaciones.filter((item) => item.ramo === "Fundamentos de inteligencia artificial");
+  const filtrados = datosEvaluaciones.filter(
+    (item) => normalizarRamo(item.ramo) === normalizarRamo("Fundamentos de Inteligencia Artificial")
+  );
   hacer_tabla(filtrados);
 });
 
 btnWeb.addEventListener("click", () => {
-  const filtrados = datosEvaluaciones.filter((item) => item.ramo === "Desarrollo web y movil ");
+  const filtrados = datosEvaluaciones.filter(
+    (item) => normalizarRamo(item.ramo) === normalizarRamo("Desarrollo Web y Móvil")
+  );
   hacer_tabla(filtrados);
 });
 
 btnInfra.addEventListener("click", () => {
-  const filtrados = datosEvaluaciones.filter((item) => item.ramo === " Infraestructura TI");
+  const filtrados = datosEvaluaciones.filter(
+    (item) => normalizarRamo(item.ramo) === normalizarRamo("Infraestructura TI")
+  );
   hacer_tabla(filtrados);
 });
 
 btnMineria.addEventListener("click", () => {
-  const filtrados = datosEvaluaciones.filter((item) => item.ramo === "Mineria de datos");
+  const filtrados = datosEvaluaciones.filter(
+    (item) => normalizarRamo(item.ramo) === normalizarRamo("Minería de Datos")
+  );
   hacer_tabla(filtrados);
 });
 
 hacer_tabla(datosEvaluaciones);
+
+// ---- Asignar nota a actividades completadas (Sección 4) ----
+
+const btnNuevo = document.getElementById("btnNuevo");
+const modalEvaluacion = new bootstrap.Modal(document.getElementById("modalEvaluacion"));
+const formEvaluacion = document.getElementById("formEvaluacion");
+const campoActividadCompletada = document.getElementById("campoActividadCompletada");
+
+function obtenerActividadesCompletadasSinNota() {
+  if (typeof actividades === "undefined") {
+    return [];
+  }
+
+  const idsYaUsados = datosEvaluaciones
+    .filter((item) => item.idActividad !== undefined)
+    .map((item) => item.idActividad);
+
+  return actividades.filter((actividad) => {
+    return actividad.estado === "completada" && !idsYaUsados.includes(actividad.id);
+  });
+}
+
+function formatearFechaEvaluacion(fechaTexto) {
+  const fecha = new Date(fechaTexto + "T00:00:00");
+  return fecha.toLocaleDateString("es-CL", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric"
+  });
+}
+
+function obtenerColorModalidad(modalidad) {
+  if (modalidad === "Online") {
+    return "text-success";
+  }
+  if (modalidad === "Asincronica") {
+    return "text-secondary";
+  }
+  return "text-danger";
+}
+
+function abrirModalNuevaEvaluacion() {
+  formEvaluacion.reset();
+  campoActividadCompletada.innerHTML = "";
+
+  const disponibles = obtenerActividadesCompletadasSinNota();
+
+  if (disponibles.length === 0) {
+    const opcionVacia = document.createElement("option");
+    opcionVacia.value = "";
+    opcionVacia.textContent = "No hay actividades completadas pendientes de nota";
+    campoActividadCompletada.appendChild(opcionVacia);
+    return;
+  }
+
+  disponibles.forEach((actividad) => {
+    const opcion = document.createElement("option");
+    opcion.value = actividad.id;
+    opcion.textContent = actividad.nombre + " (" + actividad.asignatura + ")";
+    campoActividadCompletada.appendChild(opcion);
+  });
+}
+
+btnNuevo.addEventListener("click", abrirModalNuevaEvaluacion);
+
+formEvaluacion.addEventListener("submit", (evento) => {
+  evento.preventDefault();
+  if (!formEvaluacion.checkValidity()) {
+    formEvaluacion.reportValidity();
+    return;
+  }
+
+  const idActividad = Number(campoActividadCompletada.value);
+  const actividad = actividades.find((a) => a.id === idActividad);
+  if (!actividad) {
+    return;
+  }
+
+  const modalidad = document.getElementById("campoModalidad").value;
+  const nota = document.getElementById("campoNota").value;
+
+  datosEvaluaciones.push({
+    evaluacion: actividad.nombre,
+    fecha: formatearFechaEvaluacion(actividad.fecha),
+    ramo: actividad.asignatura,
+    modalidad: modalidad,
+    color: obtenerColorModalidad(modalidad),
+    nota: Number(nota).toFixed(1),
+    idActividad: actividad.id
+  });
+
+  hacer_tabla(datosEvaluaciones);
+  modalEvaluacion.hide();
+});

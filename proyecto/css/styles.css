@@ -77,14 +77,14 @@
    SECCIÓN 4 - EVALUACIONES Y FECHAS
 ======================================== */
 
-.color-fechas {
-  background-color: #a5a2a5;
-  color: rgb(43, 0, 87);
+.color-evaluaciones {
+  background-color: var(--accent-soft);
+  color: var(--accent);
 }
 
-.color-evaluaciones {
-  background-color: #928e92;
-  color: rgb(43, 0, 87);
+.color-fechas {
+  background-color: var(--warn-soft);
+  color: var(--warn);
 }
 
 
