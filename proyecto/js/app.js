@@ -249,6 +249,7 @@ var actividades = [
     }
 
     dibujarTablero();
+    cargarRamosSeccion3();
     modalActividad.hide();
   });
 
@@ -258,6 +259,7 @@ var actividades = [
       return a.id !== id;
     });
     dibujarTablero();
+    cargarRamosSeccion3();
     modalActividad.hide();
   });
 
@@ -282,6 +284,7 @@ var actividades = [
         if (actividad) {
           actividad.estado = estado;
           dibujarTablero();
+          cargarRamosSeccion3();
         }
         idArrastrando = null;
       });
