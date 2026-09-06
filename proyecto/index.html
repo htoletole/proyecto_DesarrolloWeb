@@ -424,80 +424,87 @@
   
 
 <!--seccion 4-->
-<div class="container-fluid mb-5 pb-5">
-  <div class="row">
-    <div class="col-sm-8">
+<div class="container-fluid py-5">
+  <div class="row g-3">
+    <div class="col-12">
       <div class="titulo-seccion color-evaluaciones">
         <h2>
         <span>
-        </span> 
+        </span>
           Evaluaciones
         </h2>
       </div>
-      <div class="d-flex" style="gap: 10px; margin-top: 15px; margin-bottom: 15px;">
-        <button id="btnTodo" class="btn btn-outline-dark"> Todo</button>
-        <button id="btnIA" class="btn btn-outline-dark"><span></span> IA</button>
-        <button id="btnWeb" class="btn btn-outline-dark"><span></span>Desarrollo web y movil </button>
-        <button id="btnInfra" class="btn btn-outline-dark"><span></span> Infraestructura TI</button>
-        <button id="btnMineria" class="btn btn-outline-dark"><span></span> Minería de datos</button>
-        <button id="btnNuevo" class="btn btn-primary">Nuevo <span></span></button>
+
+      <div class="d-flex flex-wrap gap-2 mt-3 mb-3">
+        <button id="btnTodo" class="btn btn-outline-secondary"> Todo</button>
+        <button id="btnIA" class="btn btn-outline-secondary"><span></span> IA</button>
+        <button id="btnWeb" class="btn btn-outline-secondary"><span></span>Desarrollo web y movil </button>
+        <button id="btnInfra" class="btn btn-outline-secondary"><span></span> Infraestructura TI</button>
+        <button id="btnMineria" class="btn btn-outline-secondary"><span></span> Minería de datos</button>
+        <button id="btnNuevo" class="btn btn-accent" data-bs-toggle="modal" data-bs-target="#modalEvaluacion">Nuevo <span></span></button>
       </div>
 
-<div class="fix_scroll_tabla">
-    <table style="width: 100%; text-align: left;">
-        <thead>
-          <tr>
-            <th><span></span>Evaluacion</th>
-            <th><span></span>Fecha</th>
-            <th><span></span> Ramo </th>
-            <th><span></span> Modalidad</th>
-            <th><span></span>Nota  </th>
-          </tr>
-        </thead>
-        <tbody id="cuerpoTabla">
-          <tr>
-            <td>Control 1</td>
-            <td>Fecha1</td>
-            <td>Mineria de datos</td>
-            <td><span class="text-success fw-bold">Online</span></td>
-            <td>6.7</td>
-          </tr>
-          <tr>
-            <td> Proyecto 1A</td>
-            <td>Fecha</td>
-            <td><span></span>  Fundamentos de inteligencia artificial</td>
-            <td><span class="text-secondary fw-bold">Asincronica</span></td>
-            <td>6.9</td>
-          </tr>
-          <tr>
-            <td> Control 3 </td>
-            <td>Fecha</td>
-            <td><span></span> Infraestructura TI</td>
-            <td><span class="text-danger fw-bold">Presencial</span></td>
-            <td>4.2</td>
-          </tr>
-        <tr>
-        <td> Prueba </td>
-        <td>Fecha</td>
-        <td><span></span> IA</td>
-        <td><span class="text-danger fw-bold">Presencial</span></td>
-        <td>4.2</td>
-        </tr>
-        </tbody>
-      </table>
+      <div class="table-responsive fix_scroll_tabla">
+        <table class="table table-hover text-nowrap mb-0">
+          <thead>
+            <tr>
+              <th><span></span>Evaluacion</th>
+              <th><span></span>Fecha</th>
+              <th><span></span> Ramo </th>
+              <th><span></span> Modalidad</th>
+              <th><span></span>Nota  </th>
+            </tr>
+          </thead>
+          <tbody id="cuerpoTabla"></tbody>
+        </table>
+      </div>
     </div>
-</div>
 
-    <div class="col-sm-4">
-      <div class="titulo-seccion color-fechas">
-        <h2><span></span> Fechas importantes</h2>
-      </div>
     </div>
   </div>
 </div>
-      
+
+<div class="modal fade" id="modalEvaluacion" tabindex="-1" aria-labelledby="modalEvaluacionTitulo" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="formEvaluacion">
+
+        <header class="modal-header">
+          <h5 class="modal-title" id="modalEvaluacionTitulo">Nueva evaluación</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar modal"></button>
+        </header>
+
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="campoActividadCompletada" class="form-label">Actividad completada</label>
+            <select class="form-select" id="campoActividadCompletada" name="campoActividadCompletada" required></select>
+          </div>
+
+          <fieldset class="row g-3">
+            <div class="col-6">
+              <label for="campoModalidad" class="form-label">Modalidad</label>
+              <select class="form-select" id="campoModalidad" name="campoModalidad" required>
+                <option value="Presencial">Presencial</option>
+                <option value="Online">Online</option>
+                <option value="Asincronica">Asincrónica</option>
+              </select>
+            </div>
+            <div class="col-6">
+              <label for="campoNota" class="form-label">Nota (1.0 - 7.0)</label>
+              <input type="number" class="form-control" id="campoNota" name="campoNota" min="1" max="7" step="0.1" required>
+            </div>
+          </fieldset>
+        </div>
+
+        <footer class="modal-footer">
+          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-accent">Guardar</button>
+        </footer>
+
+      </form>
     </div>
   </div>
+</div>
 
 
   <script src="js/app.js"></script>
