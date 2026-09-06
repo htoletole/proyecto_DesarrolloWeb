@@ -534,6 +534,247 @@ botonAgregar.addEventListener('click', (e) => {
 
 console.log('JavaScript funcionandooo');
 
+// Sección 3: Ramos
+const datosRamosSeccion3 = [
+  {
+    nombre: "Minería de Datos",
+    nota: "Aún no hay notas",
+    colorBarra: "bg-success"
+  },
+  {
+    nombre: "Fundamentos de Inteligencia Artificial",
+    nota: "Aún no hay notas",
+    colorBarra: "bg-danger"
+  },
+  {
+    nombre: "Infraestructura TI",
+    nota: "Aún no hay notas",
+    colorBarra: "bg-primary"
+  },
+  {
+    nombre: "Desarrollo Web y Móvil",
+    nota: "Aún no hay notas",
+    colorBarra: "bg-info"
+  }
+];
+
+function obtenerActividadesRamo(nombreRamo) {
+  return actividades.filter(function (actividad) {
+    return actividad.asignatura === nombreRamo;
+  });
+}
+
+function obtenerTextoPendientesRamos(cantidad) {
+  if (cantidad === 0) {
+    return "Sin pendientes";
+  }
+
+  if (cantidad === 1) {
+    return "1 pendiente";
+  }
+
+  return cantidad + " pendientes";
+}
+
+function calcularProgresoRamo(actividadesRamo) {
+  if (actividadesRamo.length === 0) {
+    return 0;
+  }
+
+  const completadas = actividadesRamo.filter(function (actividad) {
+    return actividad.estado === "completada";
+  }).length;
+
+  return Math.round((completadas / actividadesRamo.length) * 100);
+}
+
+function obtenerProximaActividadRamo(actividadesRamo) {
+  const pendientes = actividadesRamo.filter(function (actividad) {
+    return actividad.estado !== "completada";
+  });
+
+  pendientes.sort(function (a, b) {
+    return new Date(a.fecha) - new Date(b.fecha);
+  });
+
+  if (pendientes.length === 0) {
+    return null;
+  }
+
+  return pendientes[0];
+}
+
+function formatearFechaRamos(fechaTexto) {
+  if (!fechaTexto) {
+    return "-";
+  }
+
+  const partes = fechaTexto.split("-");
+  return partes[2] + "/" + partes[1] + "/" + partes[0];
+}
+
+function obtenerColorPendientesRamos(cantidad) {
+  if (cantidad === 0) {
+    return "text-bg-success";
+  }
+
+  if (cantidad <= 2) {
+    return "text-bg-warning";
+  }
+
+  return "text-bg-danger";
+}
+
+function obtenerTextoEstadoRamos(estado) {
+  if (estado === "pendiente") {
+    return "Pendiente";
+  }
+
+  if (estado === "progreso") {
+    return "En progreso";
+  }
+
+  return "Completada";
+}
+
+function mostrarActividadesRamo(ramo) {
+  const actividadesRamo = obtenerActividadesRamo(ramo.nombre);
+
+  if (actividadesRamo.length === 0) {
+    alert(ramo.nombre + "\n\nNo hay actividades registradas.");
+    return;
+  }
+
+  actividadesRamo.sort(function (a, b) {
+    return new Date(a.fecha) - new Date(b.fecha);
+  });
+
+  let mensaje = ramo.nombre + "\n\nActividades:\n";
+
+  actividadesRamo.forEach(function (actividad) {
+    mensaje +=
+      "- " + actividad.nombre +
+      " | " + obtenerTextoEstadoRamos(actividad.estado) +
+      " | " + formatearFechaRamos(actividad.fecha) +
+      "\n";
+  });
+
+  alert(mensaje);
+}
+
+function cargarRamosSeccion3() {
+  if (typeof actividades === "undefined") {
+    return;
+  }
+
+  const seccionRamos = document.querySelector(".seccion-ramos");
+
+  if (!seccionRamos) {
+    return;
+  }
+
+  const tarjetas = seccionRamos.querySelectorAll(".tarjeta-ramo");
+
+  tarjetas.forEach((tarjeta, indice) => {
+    const ramo = datosRamosSeccion3[indice];
+
+    if (!ramo) {
+      return;
+    }
+
+    const actividadesRamo = obtenerActividadesRamo(ramo.nombre);
+
+    const pendientes = actividadesRamo.filter(function (actividad) {
+      return actividad.estado !== "completada";
+    }).length;
+
+    const progreso = calcularProgresoRamo(actividadesRamo);
+    const proximaActividad = obtenerProximaActividadRamo(actividadesRamo);
+
+    // Nombre del ramo
+    const titulo = tarjeta.querySelector(".card-title");
+
+    if (titulo) {
+      titulo.textContent = ramo.nombre;
+    }
+
+    // Barra de progreso
+    const barra = tarjeta.querySelector(".progress-bar");
+
+    if (barra) {
+      barra.style.width = progreso + "%";
+      barra.setAttribute("aria-valuenow", progreso);
+
+      barra.classList.remove(
+        "bg-success",
+        "bg-danger",
+        "bg-primary",
+        "bg-info"
+      );
+
+      barra.classList.add(ramo.colorBarra);
+    }
+
+    // Porcentaje de progreso
+    const porcentaje = tarjeta.querySelector(".texto-progreso + p");
+
+    if (porcentaje) {
+      porcentaje.textContent = progreso + " %";
+    }
+
+    // Nota de presentación
+    const nota = tarjeta.querySelector(".texto-nota + p");
+
+    if (nota) {
+      nota.textContent = ramo.nota;
+    }
+
+    // Próxima actividad y fecha
+    const datos = tarjeta.querySelectorAll(".nombre-dato");
+
+    if (datos.length >= 2) {
+      if (proximaActividad) {
+        datos[0].nextElementSibling.textContent = proximaActividad.nombre;
+        datos[1].nextElementSibling.textContent =
+          formatearFechaRamos(proximaActividad.fecha);
+      } else if (actividadesRamo.length === 0) {
+        datos[0].nextElementSibling.textContent = "Sin actividades registradas";
+        datos[1].nextElementSibling.textContent = "-";
+      } else {
+        datos[0].nextElementSibling.textContent = "Sin actividades pendientes";
+        datos[1].nextElementSibling.textContent = "-";
+      }
+    }
+
+    // Cantidad de pendientes
+    const badge = tarjeta.querySelector(".badge");
+
+    if (badge) {
+      badge.textContent = obtenerTextoPendientesRamos(pendientes);
+
+      badge.classList.remove(
+        "text-bg-warning",
+        "text-bg-danger",
+        "text-bg-success",
+        "text-bg-secondary"
+      );
+
+      badge.classList.add(obtenerColorPendientesRamos(pendientes));
+    }
+
+    // Botón Ver actividades
+    const boton = tarjeta.querySelector("button.btn");
+
+    if (boton) {
+      boton.onclick = () => {
+        mostrarActividadesRamo(ramo);
+      };
+    }
+  });
+}
+
+cargarRamosSeccion3();
+
 const datosEvaluaciones = 
 [
   { 
