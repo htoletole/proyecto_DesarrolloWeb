@@ -6,11 +6,7 @@ const asignaturas = [
 ];
 
 let contadorId = 1;
-let actividades = [
-  { id: contadorId++, nombre: "Preprocesamiento de datos", descripcion: "Dejar lista la limpieza de datos para el próximo control.", asignatura: asignaturas[1], fecha: "2026-09-08", estado: "progreso" },
-  { id: contadorId++, nombre: "Laberinto con búsqueda", descripcion: "Implementar algoritmos de búsqueda para el proyecto.", asignatura: asignaturas[2], fecha: "2026-08-30", estado: "completada" },
-  { id: contadorId++, nombre: "Configuración de servidor", descripcion: "Dejar listo el laboratorio de infraestructura.", asignatura: asignaturas[3], fecha: "2026-09-06", estado: "pendiente" }
-];
+let actividades = [];
 
 (function () {
   let filtroAsignaturaActual = "todas";
