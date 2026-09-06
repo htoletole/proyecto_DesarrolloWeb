@@ -1,3 +1,296 @@
+var asignaturas = [
+  "Minería de Datos",
+  "Fundamentos de Inteligencia Artificial",
+  "Infraestructura TI",
+  "Desarrollo Web y Móvil"
+];
+
+var contadorId = 1;
+var actividades = [
+  { id: contadorId++, nombre: "Preprocesamiento de datos", descripcion: "Dejar lista la limpieza de datos para el próximo control.", asignatura: asignaturas[0], fecha: "2026-09-08", estado: "progreso" },
+  { id: contadorId++, nombre: "Laberinto con búsqueda", descripcion: "Implementar algoritmos de búsqueda para el proyecto.", asignatura: asignaturas[1], fecha: "2026-08-30", estado: "completada" },
+  { id: contadorId++, nombre: "Configuración de servidor", descripcion: "Dejar listo el laboratorio de infraestructura.", asignatura: asignaturas[2], fecha: "2026-09-06", estado: "pendiente" }
+];
+
+(function () {
+  var filtroAsignaturaActual = "todas";
+  var filtroEstadoActual = "todos";
+  var idArrastrando = null;
+
+  var selectFiltroAsignatura = document.getElementById("filtroAsignatura");
+  var selectFiltroEstado = document.getElementById("filtroEstado");
+  var selectCampoAsignatura = document.getElementById("campoAsignatura");
+  var btnLimpiarFiltros = document.getElementById("btnLimpiarFiltros");
+  var btnNueva = document.getElementById("btnNueva");
+  var btnEliminar = document.getElementById("btnEliminar");
+  var formActividad = document.getElementById("formActividad");
+  var modalTitulo = document.getElementById("modalTitulo");
+  var barraAvance = document.getElementById("barraAvance");
+  var modalActividad = new bootstrap.Modal(document.getElementById("modalActividad"));
+
+  var columnas = {
+    pendiente: document.getElementById("colPendiente"),
+    progreso: document.getElementById("colProgreso"),
+    completada: document.getElementById("colCompletada")
+  };
+  var contadores = {
+    pendiente: document.getElementById("countPendiente"),
+    progreso: document.getElementById("countProgreso"),
+    completada: document.getElementById("countCompletada")
+  };
+
+  function llenarSelectsAsignatura() {
+    for (var i = 0; i < asignaturas.length; i++) {
+      var opcion1 = document.createElement("option");
+      opcion1.value = asignaturas[i];
+      opcion1.textContent = asignaturas[i];
+      selectFiltroAsignatura.appendChild(opcion1);
+
+      var opcion2 = document.createElement("option");
+      opcion2.value = asignaturas[i];
+      opcion2.textContent = asignaturas[i];
+      selectCampoAsignatura.appendChild(opcion2);
+    }
+  }
+
+  function diasParaFecha(fechaTexto) {
+    var hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+    var fecha = new Date(fechaTexto + "T00:00:00");
+    return Math.round((fecha - hoy) / (1000 * 60 * 60 * 24));
+  }
+
+  function textoFecha(actividad) {
+    if (actividad.estado === "completada") {
+      return "Entregada";
+    }
+    var dias = diasParaFecha(actividad.fecha);
+    if (dias < 0) {
+      return "Vencida hace " + Math.abs(dias) + " día(s)";
+    } else if (dias === 0) {
+      return "Vence hoy";
+    } else {
+      return "Vence en " + dias + " día(s)";
+    }
+  }
+
+  function estaPorVencer(actividad) {
+    return actividad.estado !== "completada" && diasParaFecha(actividad.fecha) <= 3;
+  }
+
+  function obtenerActividadesFiltradas() {
+    var resultado = [];
+    for (var i = 0; i < actividades.length; i++) {
+      var a = actividades[i];
+      var pasaAsignatura = filtroAsignaturaActual === "todas" || a.asignatura === filtroAsignaturaActual;
+      var pasaEstado = filtroEstadoActual === "todos" || a.estado === filtroEstadoActual;
+      if (pasaAsignatura && pasaEstado) {
+        resultado.push(a);
+      }
+    }
+    return resultado;
+  }
+
+  function crearTarjeta(actividad) {
+    var tarjeta = document.createElement("article");
+    tarjeta.className = "card-activity p-3" + (estaPorVencer(actividad) ? " due-soon" : "");
+    tarjeta.draggable = true;
+    tarjeta.dataset.id = actividad.id;
+
+    var descripcionHtml = actividad.descripcion ? "<p class='small text-muted mb-2'>" + actividad.descripcion + "</p>" : "";
+
+    tarjeta.innerHTML =
+      "<div class='d-flex justify-content-between align-items-start gap-2 mb-2'>" +
+      "  <h3 class='h6 mb-0'>" + actividad.nombre + "</h3>" +
+      "  <span class='subject-badge badge'>" + actividad.asignatura + "</span>" +
+      "</div>" +
+      descripcionHtml +
+      "<div class='d-flex justify-content-between align-items-center'>" +
+      "  <span class='due-badge text-muted'>" + textoFecha(actividad) + "</span>" +
+      "  <button type='button' class='btn btn-sm btn-outline-secondary btn-editar'>Editar</button>" +
+      "</div>";
+
+    tarjeta.addEventListener("dragstart", function () {
+      idArrastrando = actividad.id;
+      tarjeta.classList.add("dragging");
+    });
+    tarjeta.addEventListener("dragend", function () {
+      tarjeta.classList.remove("dragging");
+      idArrastrando = null;
+    });
+    tarjeta.querySelector(".btn-editar").addEventListener("click", function () {
+      abrirModalEditar(actividad.id);
+    });
+
+    return tarjeta;
+  }
+
+  function dibujarTablero() {
+    var visibles = obtenerActividadesFiltradas();
+    var estados = ["pendiente", "progreso", "completada"];
+    var completadas = 0;
+    var porVencer = 0;
+
+    for (var i = 0; i < estados.length; i++) {
+      var estado = estados[i];
+      var columna = columnas[estado];
+      columna.innerHTML = "";
+
+      var actividadesDelEstado = [];
+      for (var j = 0; j < visibles.length; j++) {
+        if (visibles[j].estado === estado) {
+          actividadesDelEstado.push(visibles[j]);
+        }
+      }
+
+      if (actividadesDelEstado.length === 0) {
+        var vacio = document.createElement("p");
+        vacio.className = "empty-note p-3 text-center mb-0";
+        vacio.textContent = "Sin actividades en esta columna.";
+        columna.appendChild(vacio);
+      } else {
+        for (var k = 0; k < actividadesDelEstado.length; k++) {
+          columna.appendChild(crearTarjeta(actividadesDelEstado[k]));
+        }
+      }
+
+      contadores[estado].textContent = actividadesDelEstado.length;
+    }
+
+    for (var v = 0; v < visibles.length; v++) {
+      if (visibles[v].estado === "completada") completadas++;
+      if (estaPorVencer(visibles[v])) porVencer++;
+    }
+
+    var avance = visibles.length > 0 ? Math.round((completadas / visibles.length) * 100) : 0;
+    document.getElementById("statTotal").textContent = visibles.length;
+    document.getElementById("statVencen").textContent = porVencer;
+    document.getElementById("statAvance").textContent = avance + "%";
+    barraAvance.style.width = avance + "%";
+    barraAvance.setAttribute("aria-valuenow", avance);
+  }
+
+  function buscarActividadPorId(id) {
+    for (var i = 0; i < actividades.length; i++) {
+      if (actividades[i].id === id) {
+        return actividades[i];
+      }
+    }
+    return null;
+  }
+
+  function abrirModalNueva() {
+    formActividad.reset();
+    document.getElementById("actividadId").value = "";
+    modalTitulo.textContent = "Nueva actividad";
+    btnEliminar.classList.add("d-none");
+    document.getElementById("campoEstado").value = "pendiente";
+  }
+
+  function abrirModalEditar(id) {
+    var actividad = buscarActividadPorId(id);
+    if (!actividad) {
+      return;
+    }
+    document.getElementById("actividadId").value = actividad.id;
+    document.getElementById("campoNombre").value = actividad.nombre;
+    document.getElementById("campoDescripcion").value = actividad.descripcion;
+    document.getElementById("campoAsignatura").value = actividad.asignatura;
+    document.getElementById("campoFecha").value = actividad.fecha;
+    document.getElementById("campoEstado").value = actividad.estado;
+    modalTitulo.textContent = "Editar actividad";
+    btnEliminar.classList.remove("d-none");
+    modalActividad.show();
+  }
+
+  selectFiltroAsignatura.addEventListener("change", function () {
+    filtroAsignaturaActual = selectFiltroAsignatura.value;
+    dibujarTablero();
+  });
+
+  selectFiltroEstado.addEventListener("change", function () {
+    filtroEstadoActual = selectFiltroEstado.value;
+    dibujarTablero();
+  });
+
+  btnLimpiarFiltros.addEventListener("click", function () {
+    filtroAsignaturaActual = "todas";
+    filtroEstadoActual = "todos";
+    selectFiltroAsignatura.value = "todas";
+    selectFiltroEstado.value = "todos";
+    dibujarTablero();
+  });
+
+  btnNueva.addEventListener("click", abrirModalNueva);
+
+  formActividad.addEventListener("submit", function (evento) {
+    evento.preventDefault();
+    if (!formActividad.checkValidity()) {
+      formActividad.reportValidity();
+      return;
+    }
+
+    var id = document.getElementById("actividadId").value;
+    var nombre = document.getElementById("campoNombre").value;
+    var descripcion = document.getElementById("campoDescripcion").value;
+    var asignatura = document.getElementById("campoAsignatura").value;
+    var fecha = document.getElementById("campoFecha").value;
+    var estado = document.getElementById("campoEstado").value;
+
+    if (id) {
+      var actividad = buscarActividadPorId(Number(id));
+      actividad.nombre = nombre;
+      actividad.descripcion = descripcion;
+      actividad.asignatura = asignatura;
+      actividad.fecha = fecha;
+      actividad.estado = estado;
+    } else {
+      actividades.push({ id: contadorId++, nombre: nombre, descripcion: descripcion, asignatura: asignatura, fecha: fecha, estado: estado });
+    }
+
+    dibujarTablero();
+    modalActividad.hide();
+  });
+
+  btnEliminar.addEventListener("click", function () {
+    var id = Number(document.getElementById("actividadId").value);
+    actividades = actividades.filter(function (a) {
+      return a.id !== id;
+    });
+    dibujarTablero();
+    modalActividad.hide();
+  });
+
+  var estadosColumna = ["pendiente", "progreso", "completada"];
+  for (var e = 0; e < estadosColumna.length; e++) {
+    (function (estado) {
+      var columna = columnas[estado];
+      columna.addEventListener("dragover", function (evento) {
+        evento.preventDefault();
+        columna.classList.add("drag-over");
+      });
+      columna.addEventListener("dragleave", function () {
+        columna.classList.remove("drag-over");
+      });
+      columna.addEventListener("drop", function (evento) {
+        evento.preventDefault();
+        columna.classList.remove("drag-over");
+        if (idArrastrando === null) {
+          return;
+        }
+        var actividad = buscarActividadPorId(idArrastrando);
+        if (actividad) {
+          actividad.estado = estado;
+          dibujarTablero();
+        }
+        idArrastrando = null;
+      });
+    })(estadosColumna[e]);
+  }
+
+  llenarSelectsAsignatura();
+  dibujarTablero();
+})();
 // Lista temporal de evaluaciones
 const evaluaciones = [
   {
@@ -30,11 +323,9 @@ const tareas = [
   }
 ];
 
-// Ordenar por fecha desde la más cercana a la más lejana
 evaluacionesOrdenadas = evaluaciones.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
 tareasOrdenadas = tareas.sort((a, b) => new Date(a.fechaLimite) - new Date(b.fechaLimite));
 
-// Funcionalidad de la tabla próximo
 const btnSeleccionProximo = document.querySelector('.seleccionProximo');
 
 let periodoProximo = 14;
@@ -43,10 +334,8 @@ inputDias.value = periodoProximo;
 
 function calcularDiasRestantes(fechaProxima) {
   const hoy = new Date();
-
   const diferenciaMs = fechaProxima - hoy;
   const diasRestantes = Math.ceil(diferenciaMs / (1000 * 60 * 60 * 24));
-
   return diasRestantes;
 }
 
@@ -63,62 +352,46 @@ let periodoProximoTarea = tareasOrdenadas.filter(item => {
 function mostrarEvaluaciones() {
   const headerTabla = document.getElementById('headProximo');
   headerTabla.innerHTML = '';
-
   const header = document.createElement('tr');
-
   const headEvaluacion = document.createElement('th');
   headEvaluacion.textContent = 'Evaluación';
   headEvaluacion.scope = 'col';
-
   const headFecha = document.createElement('th');
   headFecha.textContent = 'Fecha';
   headFecha.scope = 'col';
-
   const headRamo = document.createElement('th');
   headRamo.textContent = 'Ramo';
   headRamo.scope = 'col';
-
   const headModalidad = document.createElement('th');
   headModalidad.textContent = 'Modalidad';
   headModalidad.scope = 'col';
-
   header.appendChild(headEvaluacion);
   header.appendChild(headFecha);
   header.appendChild(headRamo);
   header.appendChild(headModalidad);
-
   headerTabla.appendChild(header);
-
   const cuerpoTabla = document.getElementById('bodyProximo');
   cuerpoTabla.innerHTML = '';
-
   periodoProximoEval.forEach(item => {
     const fechaString = item.fecha.toLocaleDateString('es-CL', {
       day: '2-digit',
       month: '2-digit',
       year: 'numeric'
     });
-
     const fila = document.createElement('tr');
-
     const thEvaluacion = document.createElement('th');
     thEvaluacion.scope = 'row';
     thEvaluacion.textContent = item.evaluacion;
-
     const tdFecha = document.createElement('td');
     tdFecha.textContent = fechaString;
-
     const tdRamo = document.createElement('td');
     tdRamo.textContent = item.ramo;
-
     const tdModalidad = document.createElement('td');
     tdModalidad.textContent = item.modalidad;
-
     fila.appendChild(thEvaluacion);
     fila.appendChild(tdFecha);
     fila.appendChild(tdRamo);
     fila.appendChild(tdModalidad);
-
     cuerpoTabla.appendChild(fila);
   })
 }
@@ -126,62 +399,46 @@ function mostrarEvaluaciones() {
 function mostrarTareas() {
   const headerTabla = document.getElementById('headProximo');
   headerTabla.innerHTML = '';
-
   const header = document.createElement('tr');
-
   const headTarea = document.createElement('th');
   headTarea.textContent = 'Tarea';
   headTarea.scope = 'col';
-
   const headFechaLimite = document.createElement('th');
   headFechaLimite.textContent = 'Fecha Límite';
   headFechaLimite.scope = 'col';
-
   const headPrioridad = document.createElement('th');
   headPrioridad.textContent = 'Prioridad';
   headPrioridad.scope = 'col';
-
   const headTiempo = document.createElement('th');
   headTiempo.textContent = 'Tiempo Estimado';
   headTiempo.scope = 'col';
-
   header.appendChild(headTarea);
   header.appendChild(headFechaLimite);
   header.appendChild(headPrioridad);
   header.appendChild(headTiempo);
-
   headerTabla.appendChild(header);
-
   const cuerpoTabla = document.getElementById('bodyProximo');
   cuerpoTabla.innerHTML = '';
-
   periodoProximoTarea.forEach(item => {
     const fechaString = item.fechaLimite.toLocaleDateString('es-CL', {
       day: '2-digit',
       month: '2-digit',
       year: 'numeric'
     });
-
     const fila = document.createElement('tr');
-
     const tdTarea = document.createElement('th');
     tdTarea.scope = 'row';
     tdTarea.textContent = item.tarea;
-
     const tdFechaLimite = document.createElement('td');
     tdFechaLimite.textContent = fechaString;
-
     const tdPrioridad = document.createElement('td');
     tdPrioridad.textContent = item.prioridad;
-
     const tdTiempo = document.createElement('td');
     tdTiempo.textContent = item.tiempoEstimado;
-
     fila.appendChild(tdTarea);
     fila.appendChild(tdFechaLimite);
     fila.appendChild(tdPrioridad);
     fila.appendChild(tdTiempo);
-
     cuerpoTabla.appendChild(fila);
   })
 }
@@ -202,7 +459,6 @@ btnTareas.addEventListener('click', () => {
 
 inputDias.addEventListener('change', (e) => {
   periodoProximo = e.target.valueAsNumber || 0;
-  
   periodoProximoEval = evaluacionesOrdenadas.filter(item => {
     const dias = calcularDiasRestantes(item.fecha);
     return dias >= 0 && dias <= periodoProximo;
@@ -211,7 +467,6 @@ inputDias.addEventListener('change', (e) => {
     const dias = calcularDiasRestantes(item.fechaLimite);
     return dias >= 0 && dias <= periodoProximo;
   });
-
   if (btnSeleccionProximo.textContent == 'Evaluaciones') {
     mostrarEvaluaciones();
   } else {
@@ -219,8 +474,6 @@ inputDias.addEventListener('change', (e) => {
   }
 });
 
-
-// Funcionalidad de la lista de eventos
 const eventos = document.getElementById('listaEventos');
 
 function ajustarAltura(textarea) {
@@ -232,18 +485,14 @@ function crearNuevoEvento() {
   const nuevoLi = document.createElement('li');
   const nuevoEvento = document.createElement('textarea');
   const botonEliminar = document.createElement('button');
-
   nuevoEvento.rows = '1';
   nuevoEvento.className = 'nuevoEvento';
   nuevoEvento.placeholder = 'Ingrese un evento...';
-
   nuevoEvento.addEventListener('input', (e) => {
     ajustarAltura(e.target);
   });
-
   botonEliminar.textContent = 'X';
   botonEliminar.className = 'btn btn-outline-secondary btn-sm btnEliminar';
-
   botonEliminar.addEventListener('click', () => {
     const cantEventos = eventos.querySelectorAll('li').length;
     if (cantEventos > 1) {
@@ -253,12 +502,10 @@ function crearNuevoEvento() {
       nuevoEvento.style.height = 'auto';
     }
   });
-
   nuevoLi.className = 'list-group-item itemEvento';
   nuevoLi.appendChild(nuevoEvento);
   nuevoLi.appendChild(botonEliminar);
   eventos.appendChild(nuevoLi);
-
   nuevoEvento.focus();
 }
 
@@ -266,7 +513,6 @@ const primerEvento = eventos.querySelector('li');
 if (primerEvento) {
   const primerInput = primerEvento.querySelector('.nuevoEvento');
   const botonEliminar = primerEvento.querySelector('.btnEliminar');
-
   botonEliminar.addEventListener('click', () => {
     const cantEventos = eventos.querySelectorAll('li').length;
     if (cantEventos > 1) {
@@ -285,8 +531,6 @@ botonAgregar.addEventListener('click', (e) => {
 
 console.log('JavaScript funcionandooo');
 
-
-//Seccion 4, datos simulados, seleccion de elementos 
 const datosEvaluaciones = 
 [
   { 
@@ -323,7 +567,6 @@ const datosEvaluaciones =
   }
 ];
 
-
 const cuerpoTabla = document.getElementById("cuerpoTabla");
 const btnTodo = document.getElementById("btnTodo");
 const btnIA = document.getElementById("btnIA");
@@ -346,8 +589,6 @@ function hacer_tabla(array_datos) {
     cuerpoTabla.appendChild(fila);
   });
 }
-
-// eventos
 
 btnTodo.addEventListener("click", () => {
   hacer_tabla(datosEvaluaciones);
