@@ -92,17 +92,10 @@
    SECCIÓN 3 - RAMOS
 ======================================== */
 
-.titulo-ramos {
+.color-ramos {
   background-color: #e4f2ff;
-  padding: 14px;
-  border-radius: 6px;
-  margin-bottom: 15px;
-}
-
-.titulo-ramos h2 {
-  font-size: 22px;
   color: #2879b9;
-  margin: 0;
+  margin-bottom: 20px;
 }
 
 .tarjeta-ramo {
