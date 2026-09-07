@@ -201,19 +201,17 @@
       <!--Sección Próximo-->
       <div class="col-sm-8">
         <div class="titulo-seccion color-proximo"><h2>Próximo</h2></div>
-        <div style="display: flex;">
-          <div class="dropdown">
-            <button class="btn btn-outline-secondary btn-sm dropdown-toggle seleccionProximo" type="button" data-bs-toggle="dropdown" aria-expanded="false">Evaluaciones</button>
-            <ul class="dropdown-menu">
-              <li><button class="dropdown-item btnEvaluaciones">Evaluaciones</button></li>
-              <li><button class="dropdown-item btnTareas">Tareas</button></li>
-            </ul>
-          </div>
-          <p class="indicadorDias">Mostrando los próximos <input id="proximosDias" class="inputDias" type="number" min="0" max="30"> días</p>
-        </div>
+        <p class="indicadorDias">Mostrando los próximos <input id="proximosDias" class="inputDias" type="number" min="0" max="30"> días</p>
         <div class="table-responsive">
           <table class="table table-hover text-nowrap">
-            <thead id="headProximo"></thead>
+            <thead>
+              <tr>
+                <th scope="col">Actividad</th>
+                <th scope="col">Fecha</th>
+                <th scope="col">Ramo</th>
+                <th scope="col">Estado</th>
+              </tr>
+            </thead>
             <tbody id="bodyProximo"></tbody>
           </table>
         </div>
