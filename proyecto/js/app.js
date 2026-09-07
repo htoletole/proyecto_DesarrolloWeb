@@ -265,7 +265,7 @@ function calcularDiasRestantes(fechaProxima) {
   const hoy = new Date();
   const fechaProximaDate = new Date(fechaProxima);
   const diferenciaMs = fechaProximaDate - hoy;
-  const diasRestantes = Math.ceil((diferenciaMs / (1000 * 60 * 60 * 24)) + 1);
+  const diasRestantes = Math.ceil(diferenciaMs / (1000 * 60 * 60 * 24));
   return diasRestantes;
 }
 
