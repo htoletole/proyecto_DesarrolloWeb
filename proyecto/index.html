@@ -1,29 +1,563 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="es">
 
 <head>
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="bootstrap.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <link rel="stylesheet" href="css/styles.css">
 
-    <title>Mi programacion academica</title>
-
+  <title>Mi programacion academica</title>
 
 </head>
 
 <body>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-    
 
+  <!--Sección 1-->
+<header class="hero px-4 px-md-5 py-4 mb-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-start gap-3">
+        
+        <!-- Titulos -->
+        <section aria-labelledby="titulo-principal">
+            <span class="week-tag mb-2 d-inline-block">Proyección Semestral</span>
+            <h1 id="titulo-principal" class="h3 mb-1 mt-2">Mi programación académica</h1>
+            <p class="mb-0 opacity-75" style="max-width:32rem;">Organiza tareas, controles, proyectos, presentaciones y evaluaciones de todas tus asignaturas en un solo tablero.</p>
+        </section>
 
+        
+        <section class="d-flex gap-3" aria-label="Estadísticas generales">
+            <article class="stat-pill text-center">
+                <div class="num" id="statTotal">0</div>
+                <div class="small opacity-75">Actividades</div>
+            </article>
+            <article class="stat-pill text-center">
+                <div class="num" id="statVencen">0</div>
+                <div class="small opacity-75">Por vencer</div>
+            </article>
+            <article class="stat-pill text-center">
+                <div class="num" id="statAvance">0%</div>
+                <div class="small opacity-75">Avance</div>
+            </article>
+        </section>
 
+    </div>
+</header>
+ 
 
+<main class="container-fluid px-4 px-md-5 pb-5">
+    <section class="toolbar p-3 mb-4" aria-label="Filtros y barra de herramientas">
+        <form id="formFiltros" class="row g-3 align-items-end" onsubmit="return false;">
+            <div class="col-6 col-md-3">
+                <label for="filtroAsignatura" class="form-label small text-muted mb-1">Asignatura</label>
+                <select id="filtroAsignatura" name="filtroAsignatura" class="form-select form-select-sm">
+                    <option value="todas">Todas</option>
+                </select>
+            </div>
+            
+            <div class="col-6 col-md-3">
+                <label for="filtroEstado" class="form-label small text-muted mb-1">Estado</label>
+                <select id="filtroEstado" name="filtroEstado" class="form-select form-select-sm">
+                    <option value="todos">Todos</option>
+                    <option value="pendiente">Pendiente</option>
+                    <option value="progreso">En progreso</option>
+                    <option value="completada">Completada</option>
+                </select>
+            </div>
+            
+
+            <div class="col-md-4">
+                <label for="barraAvance" class="form-label small text-muted mb-1">Avance general</label>
+                <div class="progress">
+                    <div id="barraAvance" class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%"></div>
+                </div>
+            </div>
+            
+
+            <div class="col-6 col-md-1 d-flex justify-content-md-end">
+                <button type="button" class="btn btn-outline-secondary btn-sm" id="btnLimpiarFiltros">Limpiar</button>
+            </div>
+            
+
+            <div class="col-6 col-md-1 d-flex justify-content-md-end">
+                <button type="button" class="btn btn-accent btn-sm w-100" data-bs-toggle="modal" data-bs-target="#modalActividad" id="btnNueva">+ Nueva</button>
+            </div>
+            
+        </form>
+    </section>
+
+    <p class="small text-muted mb-3">Toca cada estado para desplegar sus actividades.</p>
+ 
+    <!-- T principal -->
+    <section class="accordion" id="acordeonActividades" aria-label="Tablero de estados de actividades">
+        
+        <article class="accordion-item">
+            <h2 class="accordion-header" id="headerPendiente">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelPendiente" aria-expanded="true" aria-controls="panelPendiente">
+                    <span class="dot dot-pendiente"></span>Pendiente
+                    <span class="badge text-bg-light border ms-2" id="countPendiente">0</span>
+                </button>
+            </h2>
+
+            <div id="panelPendiente" class="accordion-collapse collapse show" aria-labelledby="headerPendiente" data-bs-parent="#acordeonActividades">
+                <div class="accordion-body col-drop d-flex flex-column gap-3" id="colPendiente"></div>
+            </div>
+
+        </article>
+
+        <article class="accordion-item">
+            <h2 class="accordion-header" id="headerProgreso">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelProgreso" aria-expanded="false" aria-controls="panelProgreso">
+                    <span class="dot dot-progreso"></span>En progreso
+                    <span class="badge text-bg-light border ms-2" id="countProgreso">0</span>
+                </button>
+            </h2>
+
+            <div id="panelProgreso" class="accordion-collapse collapse" aria-labelledby="headerProgreso" data-bs-parent="#acordeonActividades">
+                <div class="accordion-body col-drop d-flex flex-column gap-3" id="colProgreso"></div>
+            </div>
+
+        </article>
+
+        <article class="accordion-item">
+            <h2 class="accordion-header" id="headerCompletada">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelCompletada" aria-expanded="false" aria-controls="panelCompletada">
+                    <span class="dot dot-completada"></span>Completada
+                    <span class="badge text-bg-light border ms-2" id="countCompletada">0</span>
+                </button>
+            </h2>
+
+            <div id="panelCompletada" class="accordion-collapse collapse" aria-labelledby="headerCompletada" data-bs-parent="#acordeonActividades">
+                <div class="accordion-body col-drop d-flex flex-column gap-3" id="colCompletada"></div>
+            </div>
+
+        </article>
+    </section>
+</main>
+ 
+
+<div class="modal fade" id="modalActividad" tabindex="-1" aria-labelledby="modalTitulo" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="formActividad">
+                
+                <header class="modal-header">
+                    <h5 class="modal-title" id="modalTitulo">Nueva actividad</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar modal"></button>
+                </header>
+                
+                <div class="modal-body">
+                    <input type="hidden" id="actividadId" name="actividadId">
+                    
+                    <div class="mb-3">
+                        <label for="campoNombre" class="form-label">Nombre</label>
+                        <input type="text" class="form-control" id="campoNombre" name="campoNombre" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="campoDescripcion" class="form-label">Descripción</label>
+                        <textarea class="form-control" id="campoDescripcion" name="campoDescripcion" rows="2"></textarea>
+                    </div>
+                    
+                    <!-- Fieldset para agrupar el campo -->
+                    <fieldset class="row g-3">
+                        <div class="col-6">
+                            <label for="campoAsignatura" class="form-label">Asignatura</label>
+                            <select class="form-select" id="campoAsignatura" name="campoAsignatura" required></select>
+                        </div>
+                        <div class="col-6">
+                            <label for="campoFecha" class="form-label">Fecha de entrega</label>
+                            <input type="date" class="form-control" id="campoFecha" name="campoFecha" required>
+                        </div>
+                    </fieldset>
+                    
+                    <div class="mb-1 mt-3">
+                        <label for="campoEstado" class="form-label">Estado</label>
+                        <select class="form-select" id="campoEstado" name="campoEstado">
+                            <option value="pendiente">Pendiente</option>
+                            <option value="progreso">En progreso</option>
+                            <option value="completada">Completada</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <footer class="modal-footer">
+                    <button type="button" class="btn btn-outline-danger me-auto d-none" id="btnEliminar">Eliminar</button>
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-accent">Guardar</button>
+                </footer>
+                
+            </form>
+        </div>
+    </div>
+</div>
+  
+  <!--Sección 2: Próximo y Eventos-->
+  <div class="container-fluid">
+    <div class="row">
+      <!--Sección Próximo-->
+      <div class="col-sm-8">
+        <div class="titulo-seccion color-proximo"><h2>Próximo</h2></div>
+        <p class="indicadorDias">Mostrando los próximos <input id="proximosDias" class="inputDias" type="number" min="0" max="30"> días</p>
+        <div class="table-responsive">
+          <table class="table table-hover text-nowrap">
+            <thead>
+              <tr>
+                <th scope="col">Actividad</th>
+                <th scope="col">Fecha</th>
+                <th scope="col">Ramo</th>
+                <th scope="col">Estado</th>
+              </tr>
+            </thead>
+            <tbody id="bodyProximo"></tbody>
+          </table>
+        </div>
+      </div>
+      <!--Sección Eventos-->
+      <div class="col-sm-4">
+        <div class="titulo-seccion color-eventos"><h2>Eventos</h2></div>
+        <ul id="listaEventos" class="list-group" style="margin-top: 10px;">
+          <li class="list-group-item itemEvento">
+            <textarea rows="1" class="nuevoEvento" oninput="this.style.height = 'auto'; this.style.height = this.scrollHeight + 'px'" placeholder="Ingrese un evento..."></textarea>
+            <button class="btn btn-outline-secondary btn-sm btnEliminar">X</button>
+          </li>
+        </ul>
+        <div style="display: flex; justify-content: center;"><button class="btn btn-outline-primary btn-sm agregarEvento">+ Agregar evento</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sección 3: Ramos -->
+ <div class="container-fluid py-3">
+    <section class="seccion-ramos">
+
+        <header class="titulo-seccion color-ramos">
+            <h2>Ramos</h2>
+        </header>
+
+        <div class="row g-3">
+
+            <!-- Ramo 1 -->
+            <article class="col-12 col-sm-6 col-lg-3">
+                <div class="card tarjeta-ramo h-100">
+
+                    <img src="assets/ramo1.jpg"
+                         class="card-img-top"
+                         alt="Imagen del ramo">
+
+                    <div class="card-body">
+
+                        <h5 class="card-title"></h5>
+
+                        <div class="progress">
+                            <div class="progress-bar"
+                                 role="progressbar"
+                                 style="width: 0%"
+                                 aria-valuenow="0"
+                                 aria-valuemin="0"
+                                 aria-valuemax="100">
+                            </div>
+                        </div>
+
+                        <p class="texto-progreso">Progreso actual</p>
+                        <p>0 %</p>
+
+                        <p class="texto-nota">Nota de presentación</p>
+                        <p>Aún no hay notas</p>
+
+                        <hr>
+
+                        <p class="nombre-dato">Próxima actividad</p>
+                        <p>Sin actividades registradas</p>
+
+                        <p class="nombre-dato">Fecha de entrega</p>
+                        <p>-</p>
+
+                        <span class="badge text-bg-success">
+                            Sin pendientes
+                        </span>
+
+                        <button type="button"
+                                class="btn btn-outline-primary btn-sm">
+                            Ver actividades
+                        </button>
+
+                    </div>
+                </div>
+            </article>
+
+            <article class="col-12 col-sm-6 col-lg-3">
+                <div class="card tarjeta-ramo h-100">
+
+                    <img src="assets/ramo2.jpg"
+                         class="card-img-top"
+                         alt="Imagen del ramo">
+
+                    <div class="card-body">
+
+                        <h5 class="card-title"></h5>
+
+                        <div class="progress">
+                            <div class="progress-bar"
+                                 role="progressbar"
+                                 style="width: 0%"
+                                 aria-valuenow="0"
+                                 aria-valuemin="0"
+                                 aria-valuemax="100">
+                            </div>
+                        </div>
+
+                        <p class="texto-progreso">Progreso actual</p>
+                        <p>0 %</p>
+
+                        <p class="texto-nota">Nota de presentación</p>
+                        <p>Aún no hay notas</p>
+
+                        <hr>
+
+                        <p class="nombre-dato">Próxima actividad</p>
+                        <p>Sin actividades registradas</p>
+
+                        <p class="nombre-dato">Fecha de entrega</p>
+                        <p>-</p>
+
+                        <span class="badge text-bg-success">
+                            Sin pendientes
+                        </span>
+
+                        <button type="button"
+                                class="btn btn-outline-primary btn-sm">
+                            Ver actividades
+                        </button>
+
+                    </div>
+                </div>
+            </article>
+
+            <article class="col-12 col-sm-6 col-lg-3">
+                <div class="card tarjeta-ramo h-100">
+
+                    <img src="assets/ramo3.jpg"
+                         class="card-img-top"
+                         alt="Imagen del ramo">
+
+                    <div class="card-body">
+
+                        <h5 class="card-title"></h5>
+
+                        <div class="progress">
+                            <div class="progress-bar"
+                                 role="progressbar"
+                                 style="width: 0%"
+                                 aria-valuenow="0"
+                                 aria-valuemin="0"
+                                 aria-valuemax="100">
+                            </div>
+                        </div>
+
+                        <p class="texto-progreso">Progreso actual</p>
+                        <p>0 %</p>
+
+                        <p class="texto-nota">Nota de presentación</p>
+                        <p>Aún no hay notas</p>
+
+                        <hr>
+
+                        <p class="nombre-dato">Próxima actividad</p>
+                        <p>Sin actividades registradas</p>
+
+                        <p class="nombre-dato">Fecha de entrega</p>
+                        <p>-</p>
+
+                        <span class="badge text-bg-success">
+                            Sin pendientes
+                        </span>
+
+                        <button type="button"
+                                class="btn btn-outline-primary btn-sm">
+                            Ver actividades
+                        </button>
+
+                    </div>
+                </div>
+            </article>
+
+            <article class="col-12 col-sm-6 col-lg-3">
+                <div class="card tarjeta-ramo h-100">
+
+                    <img src="assets/ramo4.jpg"
+                         class="card-img-top"
+                         alt="Imagen del ramo">
+
+                    <div class="card-body">
+
+                        <h5 class="card-title"></h5>
+
+                        <div class="progress">
+                            <div class="progress-bar"
+                                 role="progressbar"
+                                 style="width: 0%"
+                                 aria-valuenow="0"
+                                 aria-valuemin="0"
+                                 aria-valuemax="100">
+                            </div>
+                        </div>
+
+                        <p class="texto-progreso">Progreso actual</p>
+                        <p>0 %</p>
+
+                        <p class="texto-nota">Nota de presentación</p>
+                        <p>Aún no hay notas</p>
+
+                        <hr>
+
+                        <p class="nombre-dato">Próxima actividad</p>
+                        <p>Sin actividades registradas</p>
+
+                        <p class="nombre-dato">Fecha de entrega</p>
+                        <p>-</p>
+
+                        <span class="badge text-bg-success">
+                            Sin pendientes
+                        </span>
+
+                        <button type="button"
+                                class="btn btn-outline-primary btn-sm">
+                            Ver actividades
+                        </button>
+
+                    </div>
+                </div>
+            </article>
+
+        </div>
+
+    </section>
+</div> 
+  
+<!--seccion 4-->
+<div class="container-fluid py-5">
+  <div class="row g-3">
+    <div class="col-12">
+      <div class="titulo-seccion color-evaluaciones">
+        <h2>
+        <span>
+        </span>
+          Evaluaciones
+        </h2>
+      </div>
+
+      <div class="d-flex flex-wrap gap-2 mt-3 mb-3">
+        <button id="btnTodo" class="btn btn-outline-secondary"> Todo</button>
+        <button id="btnIA" class="btn btn-outline-secondary"><span></span> IA</button>
+        <button id="btnWeb" class="btn btn-outline-secondary"><span></span>Desarrollo web y movil </button>
+        <button id="btnInfra" class="btn btn-outline-secondary"><span></span> Infraestructura TI</button>
+        <button id="btnMineria" class="btn btn-outline-secondary"><span></span> Minería de datos</button>
+        <button id="btnNuevo" class="btn btn-accent" data-bs-toggle="modal" data-bs-target="#modalEvaluacion">Nuevo <span></span></button>
+      </div>
+
+      <div class="table-responsive fix_scroll_tabla">
+        <table class="table table-hover text-nowrap mb-0">
+          <thead>
+            <tr>
+              <th><span></span>Evaluacion</th>
+              <th><span></span>Fecha</th>
+              <th><span></span> Ramo </th>
+              <th><span></span> Modalidad</th>
+              <th><span></span>Nota  </th>
+            </tr>
+          </thead>
+          <tbody id="cuerpoTabla"></tbody>
+        </table>
+      </div>
+    </div>
+    </div>
+  </div>
+
+<div class="modal fade" id="modalEvaluacion" tabindex="-1" aria-labelledby="modalEvaluacionTitulo" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="formEvaluacion">
+
+        <header class="modal-header">
+          <h5 class="modal-title" id="modalEvaluacionTitulo">Nueva evaluación</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar modal"></button>
+        </header>
+
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="campoActividadCompletada" class="form-label">Actividad completada</label>
+            <select class="form-select" id="campoActividadCompletada" name="campoActividadCompletada" required></select>
+          </div>
+
+          <fieldset class="row g-3">
+            <div class="col-6">
+              <label for="campoModalidad" class="form-label">Modalidad</label>
+              <select class="form-select" id="campoModalidad" name="campoModalidad" required>
+                <option value="Presencial">Presencial</option>
+                <option value="Online">Online</option>
+                <option value="Asincronica">Asincrónica</option>
+              </select>
+            </div>
+            <div class="col-6">
+              <label for="campoNota" class="form-label">Nota (1.0 - 7.0)</label>
+              <input type="number" class="form-control" id="campoNota" name="campoNota" min="1" max="7" step="0.1" required>
+            </div>
+          </fieldset>
+        </div>
+
+        <footer class="modal-footer">
+          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-accent">Guardar</button>
+        </footer>
+
+      </form>
+    </div>
+  </div>
+</div>
+  
+  <div
+      class="modal fade"
+      id="modalActividadesRamo"
+      tabindex="-1"
+      aria-labelledby="tituloModalRamo"
+      aria-hidden="true">
+
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+          <div class="modal-header">
+            <h5 class="modal-title" id="tituloModalRamo">
+              Actividades
+            </h5>
+
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Cerrar">
+            </button>
+          </div>
+
+          <div class="modal-body" id="contenidoModalRamo">
+          </div>
+
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal">
+              Cerrar
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  <script src="js/app.js"></script>
 </body>
-
-
-
-
 
 </html>
