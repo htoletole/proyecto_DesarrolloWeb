@@ -497,22 +497,18 @@ console.log('JavaScript funcionandooo');
 const datosRamosSeccion3 = [
   {
     nombre: "Minería de Datos",
-    nota: "Aún no hay notas",
     colorBarra: "bg-success"
   },
   {
     nombre: "Fundamentos de Inteligencia Artificial",
-    nota: "Aún no hay notas",
     colorBarra: "bg-danger"
   },
   {
     nombre: "Infraestructura TI",
-    nota: "Aún no hay notas",
     colorBarra: "bg-primary"
   },
   {
     nombre: "Desarrollo Web y Móvil",
-    nota: "Aún no hay notas",
     colorBarra: "bg-info"
   }
 ];
@@ -569,7 +565,27 @@ function formatearFechaRamos(fechaTexto) {
   }
 
   const partes = fechaTexto.split("-");
-  return partes[2] + "/" + partes + "/" + partes[0];
+  return partes[2] + "/" + partes[1] + "/" + partes[0];
+}
+
+function calcularNotaPromedioRamo(nombreRamo) {
+  const evaluacionesRamo = datosEvaluaciones.filter(function (evaluacion) {
+    return evaluacion.ramo === nombreRamo;
+  });
+
+  if (evaluacionesRamo.length === 0) {
+    return "Aún no hay notas";
+  }
+
+  let sumaNotas = 0;
+
+  evaluacionesRamo.forEach(function (evaluacion) {
+    sumaNotas += Number(evaluacion.nota);
+  });
+
+  const promedio = sumaNotas / evaluacionesRamo.length;
+
+  return promedio.toFixed(1).replace(".", ",");
 }
 
 function obtenerColorPendientesRamos(cantidad) {
@@ -599,8 +615,21 @@ function obtenerTextoEstadoRamos(estado) {
 function mostrarActividadesRamo(ramo) {
   const actividadesRamo = obtenerActividadesRamo(ramo.nombre);
 
+  const tituloModal = document.getElementById("tituloModalRamo");
+  const contenidoModal = document.getElementById("contenidoModalRamo");
+  const modalElemento = document.getElementById("modalActividadesRamo");
+
+  tituloModal.textContent = ramo.nombre;
+  contenidoModal.innerHTML = "";
+
   if (actividadesRamo.length === 0) {
-    alert(ramo.nombre + "\n\nNo hay actividades registradas.");
+    const mensaje = document.createElement("p");
+    mensaje.textContent = "No hay actividades registradas.";
+    mensaje.className = "text-muted mb-0";
+
+    contenidoModal.appendChild(mensaje);
+
+    bootstrap.Modal.getOrCreateInstance(modalElemento).show();
     return;
   }
 
@@ -608,17 +637,42 @@ function mostrarActividadesRamo(ramo) {
     return new Date(a.fecha) - new Date(b.fecha);
   });
 
-  let mensaje = ramo.nombre + "\n\nActividades:\n";
+  const lista = document.createElement("div");
+  lista.className = "list-group";
 
   actividadesRamo.forEach(function (actividad) {
-    mensaje +=
-      "- " + actividad.nombre +
-      " | " + obtenerTextoEstadoRamos(actividad.estado) +
-      " | " + formatearFechaRamos(actividad.fecha) +
-      "\n";
+    const item = document.createElement("div");
+    item.className = "list-group-item";
+
+    const nombre = document.createElement("h6");
+    nombre.textContent = actividad.nombre;
+
+    const estado = document.createElement("span");
+    estado.textContent = obtenerTextoEstadoRamos(actividad.estado);
+    estado.className = "badge me-2";
+
+    if (actividad.estado === "completada") {
+      estado.classList.add("text-bg-success");
+    } else if (actividad.estado === "progreso") {
+      estado.classList.add("text-bg-primary");
+    } else {
+      estado.classList.add("text-bg-warning");
+    }
+
+    const fecha = document.createElement("span");
+    fecha.textContent = formatearFechaRamos(actividad.fecha);
+    fecha.className = "small text-secondary";
+
+    item.appendChild(nombre);
+    item.appendChild(estado);
+    item.appendChild(fecha);
+
+    lista.appendChild(item);
   });
 
-  alert(mensaje);
+  contenidoModal.appendChild(lista);
+
+  bootstrap.Modal.getOrCreateInstance(modalElemento).show();
 }
 
 function cargarRamosSeccion3() {
@@ -677,7 +731,7 @@ function cargarRamosSeccion3() {
 
     const nota = tarjeta.querySelector(".texto-nota + p");
     if (nota) {
-      nota.textContent = ramo.nota;
+      nota.textContent = calcularNotaPromedioRamo(ramo.nombre);
     }
 
 const datos = tarjeta.querySelectorAll(".nombre-dato");
@@ -718,10 +772,9 @@ if (datos.length >= 2) {
   });
 }
 
-cargarRamosSeccion3();
-
-
 const datosEvaluaciones = []
+
+cargarRamosSeccion3();
 
 const cuerpoTabla = document.getElementById("cuerpoTabla");
 const btnTodo = document.getElementById("btnTodo");
@@ -878,5 +931,6 @@ formEvaluacion.addEventListener("submit", (evento) => {
   });
 
   hacer_tabla(datosEvaluaciones);
+  cargarRamosSeccion3();
   modalEvaluacion.hide();
 });
